@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+            crossorigin="anonymous"></script>
+
+    <!-- font awsome -->
+    <script src="https://kit.fontawesome.com/9fc6240993.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+          integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous"/>
+
+    <link href="/css/index.css" rel="stylesheet"/>
+    <script src="/script/index.js" defer></script>
+
+    <title>Weather App</title>
+</head>
+<body>
+
+<div class="card-main">
+
+    <section class="weather">
+        <h2 class="visually-hidden">La météo du jour</h2>
+        <!-- Remarque : : la classe « visually-hidden » de Bootstrap est utilisé pour les balises HTML qui
+        ne sont pas sensés être visible sur l’écran, et existe uniquement pour des raisons sémantiques, comme pour
+        les lecteurs d’écran (accessibilité) et pour l’optimisation de moteur de recherche -->
+        <div class="date-wrapper">
+            <span class="day-of-week">
+                MARDI
+            </span>
+            <span class="date">
+                7 Juin 2022
+            </span>
+            <span class="location">
+               🇫🇷 Gif-sur-Yvette
+            </span>
+        </div>
+
+        <div class="weather-wrapper">
+            <span class="weather-icon"><i class="fas fa-sun"></i></span>
+            <p style="text-align: center; margin-top: -0.4vw">Sunny</p>
+            <p style="margin-top: -0.4vw"> 30 degrees</p>
+        </div>
+    </section>
+
+    <section class="map">
+        <h2 class="visually-hidden">Carte de votre ville</h2>
+        <iframe height='400'
+                src="https://api.mapbox.com/styles/v1/aubynken/cl445bqtv000214ql6yw07ehw.html?title=false&access_token=pk.eyJ1IjoiYXVieW5rZW4iLCJhIjoiY2txMmF0dnlvMG1qYzJ3cXAxY3AxancwNyJ9.ggFaSP_B7rhLR6t37hGs0w&zoomwheel=false#12.83/48.69602/2.13448"
+                title="Navigation" style="border:none;"></iframe>
+    </section>
+
+    <section class="info container">
+        <h2 class="visually-hidden">Informations météo</h2>
+        <dl>
+            <div class="row d-inline-flex w-100 ml-2">
+                <div class="info-cell col-md-12 col-lg-6">
+                    <dt>Température :</dt>
+                    <dd> 12 degrés</dd>
+                </div>
+                <div class="info-cell col-md-12 col-lg-6">
+                    <dt>Couverture nuageuse :</dt>
+                    <dd> gris foncé</dd>
+                </div>
+            </div>
+
+            <div class="row d-inline-flex w-100 ml-2">
+                <div class="info-cell col-md-12 col-lg-6">
+                    <dt>Vitesse du vent :</dt>
+                    <dd>40 à 80 km/h</dd>
+                </div>
+                <div class="info-cell col-md-12 col-lg-6">
+                    <dt>Visibilité :</dt>
+                    <dd>5 m</dd>
+                </div>
+            </div>
+
+            <div class="row d-inline-flex w-100 ml-2">
+                <div class="info-cell col-md-12 col-lg-6">
+                    <dt>Lever de soleil :</dt>
+                    <dd><time>10:00</time></dd>
+                </div>
+                <div class="info-cell col-md-12 col-lg-6">
+                    <dt>Coucher de soleil :</dt>
+                    <dd><time>16:00</time></dd>
+                </div>
+            </div>
+
+            <div class="row d-inline-flex w-100 ml-2">
+                <div class="info-cell col-md-12 col-lg-6">
+                    <dt>Lever de lune :</dt>
+                    <dd><time>5:00</time></dd>
+                </div>
+                <div class="info-cell col-md-12 col-lg-6">
+                    <dt>Coucher de lune :</dt>
+                    <dd><time>13:00</time></dd>
+                </div>
+            </div>
+        </dl>
+        <div class="row">
+            <button id="btn-setting" type="button" class="col-16 btn btn-secondary btn-setting">Paramètres</button>
+        </div>
+    </section>
+
+    <form class="info-setting container">
+        <h2>Paramètres</h2>
+        <p style="font-size: 1.3em">Choisissez ce que vous voulez <strong>enlever</strong>.</p>
+
+        <div class="row">
+            <div class="info-cell col-md-12 col-lg-6">
+                <input class="form-check-input" type="checkbox" value="" id="check-temp">
+                <label class="form-check-label" for="check-temp">
+                    Température
+                </label>
+            </div>
+            <div class="info-cell col-md-12 col-lg-6">
+                <input class="form-check-input" type="checkbox" value="" id="check-cloud">
+                <label class="form-check-label" for="check-cloud">
+                    Couverture nuageuse
+                </label>
+            </div>
+            <div class="info-cell col-md-12 col-lg-6">
+                <input class="form-check-input" type="checkbox" value="" id="check-wind">
+                <label class="form-check-label" for="check-wind">
+                    Vitesse du vent
+                </label>
+            </div>
+            <div class="info-cell col-md-12 col-lg-6">
+                <input class="form-check-input" type="checkbox" value="" id="check-visibility">
+                <label class="form-check-label" for="check-visibility">
+                    Visibilité
+                </label>
+            </div>
+            <div class="info-cell col-md-12 col-lg-6">
+                <input class="form-check-input" type="checkbox" value="" id="check-sunrise">
+                <label class="form-check-label" for="check-sunrise">
+                    Levée de soleil
+                </label>
+            </div>
+            <div class="info-cell col-md-12 col-lg-6">
+                <input class="form-check-input" type="checkbox" value="" id="check-sundown">
+                <label class="form-check-label" for="check-sundown">
+                    Coucher de soleil
+                </label>
+            </div>
+            <div class="info-cell col-md-12 col-lg-6">
+                <input class="form-check-input" type="checkbox" value="" id="check-moonrise">
+                <label class="form-check-label" for="check-moonrise">
+                    Levée de lune
+                </label>
+            </div>
+            <div class="info-cell col-md-12 col-lg-6">
+                <input class="form-check-input" type="checkbox" value="" id="check-moondown">
+                <label class="form-check-label" for="check-moondown">
+                    Coucher de lune
+                </label>
+            </div>
+        </div>
+        <div class="row">
+            <button id="btn-return" type="button" class="col-16 btn btn-secondary btn-setting">Sauvegarder</button>
+        </div>
+    </form>
+</div>
+
+</body>
+
+<footer>Pinglei He 2022 <a href="contact.html">Contact Me</a></footer>
+
+</html>

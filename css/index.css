@@ -1,0 +1,193 @@
+/*
+Author: Pinglei He
+
+Les commentaires de code sont écrits en anglais.
+J’essaie de ne pas utiliser le sélecteur ID pour la plus grande réutilisabilité des styles dans les prochaines étapes
+du projet.
+ */
+
+* {
+    box-sizing: border-box; /* for avoiding weird effects with width / heights when there's padding and margin */
+    line-height: 1.25em;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    background-color: #343d4b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-main {
+    background-color: #222831;
+    min-height: 70vh;
+    width: 60%;
+    border-radius: 10px;
+    color: white;
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+
+
+.weather {
+    margin-top: 0;
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    border-radius: inherit;
+    background-image: url(https://i.imgur.com/g2uDd1A.jpeg);
+            /* url("https://images.unsplash.com/photo-1559963110-71b394e7494d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=675&q=80"); */
+    background-size: cover;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+
+.date-wrapper {
+    position: relative;
+    top: 3vw;
+    left: 3vw;
+    color: white;
+}
+
+.date-wrapper > * {
+    display: block;
+}
+
+.day-of-week {
+    font-weight: bold;
+    font-size: 3vw;
+}
+
+.date {
+    font-weight: lighter;
+    font-size: 1.8vw;
+}
+
+.location {
+    font-weight: lighter;
+    padding-block-start: 0.5em;
+    font-size: 1.6vw;
+}
+
+.weather:hover {
+    /* when hovered over, the weather card expands */
+    transform: scale(1.05);
+}
+
+.weather-wrapper {
+    float: right;
+    margin-right: 9vw;
+    position: relative;
+    /*right: 3vw;*/
+    /*bottom: 0;*/
+}
+
+.weather-wrapper > p {
+    text-align: center;
+    margin-top: -0.4vw;
+}
+
+.weather-icon {
+    font-size: 9vw;
+}
+
+
+.map > iframe {
+    width: 100%;
+}
+
+.card-main > section > * {
+    border-radius: inherit;
+}
+
+.card-main > section {
+    transition: transform 0.15s; /* hovering effect smooth transition */
+}
+
+.card-main > section:hover {
+    transform: scale(1.1);
+    border-radius: 20px;
+}
+
+.card-main > .info {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.card-main > .info:hover{
+    transform: none;
+}
+
+.card-main > .info-setting:hover {
+    transform: none;
+}
+
+.info, .info-setting {
+    padding: 2vw;
+}
+
+dt, dd{
+    display: inline;
+}
+
+.info-cell {
+    padding: 0.7rem;
+    font-size: 1.3rem;
+}
+
+.info-setting {
+    display: none;
+}
+
+.btn-setting {
+
+}
+
+address {
+    font-size: 2em;
+    line-height: 2.5em;
+}
+
+footer {
+    position:fixed;
+    bottom:0px;
+    height:30px;
+    width:100%;
+    text-align: center;
+}
+
+@media (max-width: 1200px) {
+    .card-main {
+        margin-top: 40px;
+        margin-bottom: 40px;
+        width: 95%;
+    }
+
+    .date-wrapper {
+        top: 4vw;
+        left: 4vw;
+    }
+
+    .day-of-week {
+        font-size: 6vw;
+    }
+
+    .date {
+        font-size: 4.5vw;
+    }
+
+    .location {
+        font-size: 3vw;
+    }
+
+    .card-main > section:hover {
+        transform: scale(1.03);
+        border-radius: 20px;
+    }
+
+    .card-main > .info:hover {
+        transform: none;
+    }
+}
