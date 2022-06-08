@@ -1,9 +1,5 @@
 /*
 Author: Pinglei He
-
-Les commentaires de code sont écrits en anglais.
-J’essaie de ne pas utiliser le sélecteur ID pour la plus grande réutilisabilité des styles dans les prochaines étapes
-du projet.
  */
 
 * {
@@ -28,8 +24,6 @@ body {
     margin-top: 100px;
     margin-bottom: 100px;
 }
-
-
 
 .weather {
     margin-top: 0;
@@ -152,7 +146,7 @@ address {
 
 footer {
     position:fixed;
-    bottom:0px;
+    bottom:0;
     height:30px;
     width:100%;
     text-align: center;
