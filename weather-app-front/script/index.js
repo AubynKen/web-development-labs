@@ -1,29 +1,70 @@
+"use strict";
 // author: Pinglei He
-// Les commentaires ont été faits en Anglais parce que le français n’est pas ma langue maternelle
-// et il y a pas mal de mot en programmation que je ne sais pas dire en français.
-// Aussi parce que j’utilise une disposition de clavier sans accent pour coder (Colemak)
+// language: javascript
+// date: 2022-06-09
 
-// html elements 
-const settingButton = document.getElementById("btn-setting");
-const returnButton = document.getElementById("btn-return");
 const infoSection = document.getElementsByClassName("info")[0];
 const settingSection = document.getElementsByClassName("info-setting")[0];
 
-// button to show and hide weather information panel
-settingButton.addEventListener("click", e => {
-  e.preventDefault();
-  infoSection.style.display = "none"; // hide info panel
-  settingSection.style.display = "block"; // show setting panel
-});
+/**
+ * Returns the latest user configuration data from local storage if exists, otherwise retrieve settings from backend.
+ * @returns {Promise<any>}
+ */
+const fetchConfig = async () => {
+  if (localStorage.getItem("config")) { // if we have a config in local storage
+    return JSON.parse(localStorage.getItem("config")); // get it
+  }
+  const res = await fetch("http://localhost:3000/config"); // otherwise fetch it from the server
+  const resString = await res.json();
+  return JSON.parse(resString);
+}
 
-returnButton.addEventListener("click", e => {
+/**
+ * Event handler for the setting button's click event.
+ * @param e the click event
+ * @returns {Promise<void>}
+ */
+const settingButtonClickHandler = async (e) => {
+  // prevent page reload
   e.preventDefault();
+  // hide info panel
+  infoSection.style.display = "none";
+  // get previous config data
+  const config = await fetchConfig();
+  // update form values with previous config values
+  document.querySelector("#check-currWeather").checked = config.currWeather.state;
+  document.querySelector("#check-temperature").checked = config.temperature.state;
+  document.querySelector("#check-wind").checked = config.wind.state;
+  document.querySelector("#check-visibility").checked = config.visibility.state;
+  document.querySelector("#check-sunrise").checked = config.sunrise.state;
+  document.querySelector("#check-sunset").checked = config.sunset.state;
+  document.querySelector("#check-moonrise").checked = config.moonrise.state;
+  document.querySelector("#check-moonset").checked = config.moonset.state;
+  document.querySelector("#select-unit").value = config.temperature.unit;
+  // show setting panel
+  settingSection.style.display = "block";
+}
+document.getElementById("btn-setting").addEventListener("click", settingButtonClickHandler);
+
+/**
+ * Event handler for the return button's click event.
+ * @param e click event
+ */
+const returnButtonClickHandler = (e) => {
+  // prevent page reload
+  e.preventDefault();
+  // hide setting panel
   settingSection.style.display = "none";
+  // show info panel
   infoSection.style.display = "block";
-});
+}
+document.getElementById("btn-return").addEventListener("click", returnButtonClickHandler);
 
-// hide all elements in weather information panel
-const hideAll = () => {
+
+/**
+ * Hide all elements in weather information panel
+ */
+const hideWeatherPanelElements = () => {
   // find all element with class name "info-cell"
   const infoCells = document.getElementsByClassName("info-cell");
   // loop through all elements
@@ -33,84 +74,117 @@ const hideAll = () => {
   }
 };
 
-// show weather information based on element ids in the array
-const show = (arr) => {
+/**
+ * Show / unhide weather information based on element ids in the array
+ * @param arr array of element ids
+ */
+const showWeatherPanelElements = (arr) => {
   for (const elementID of arr) {
     const el = document.getElementById(elementID);
     el.hidden = false;
   }
 };
 
-// test
-// hideAll();
-// show(["cell-temperature", "cell-wind"]);
+/**
+ * Show only weather panel elements with ids in the array and hide the rest
+ * @param arr array of element ids
+ */
+const showOnlySelectedWeatherPanelElements = (arr) => {
+  hideWeatherPanelElements();
+  showWeatherPanelElements(arr);
+}
 
 const unitChoices = {
-  "cell-temperature": ["°C", "°F", "K"], "cell-wind": ["km/h", "mph", "m/s"], "cell-visibility": ["m", "ft"],
+  "cell-temperature": ["°C", "°F"], "cell-wind": ["km/h", "mph"], "cell-visibility": ["m", "ft"],
 };
 
 const unitSettings = {
   "cell-temperature": 0, "cell-wind": 0, "cell-visibility": 0,
 }
 
-// convert from celsius into other units
+/**
+ * convert from celsius into other units
+ * @param value value in celsius
+ * @param unit unit to convert to
+ * @returns {number|*}
+ */
 const temperatureConverter = (value, unit) => {
   if (unit === "°C") {
     return value;
   } else if (unit === "°F") {
     return Math.round(value * 1.8 + 32);
-  } else if (unit === "K") {
-    return Math.round(value + 273.15);
   }
+  return NaN;
 }
 
-// convert from meter into other units
+/**
+ * convert from meter into other units
+ * @param value value in meter
+ * @param unit unit to convert to
+ * @returns {number|*}
+ */
 const lengthConverter = (value, unit) => {
   if (unit === "m") {
     return value;
   } else if (unit === "ft") {
     return value * 3.28;
   }
+  return NaN;
 }
 
-// convert from km/h into other units
+/**
+ * convert from km/h into other units
+ * @param value value in km/h
+ * @param unit unit to convert to
+ * @returns {number|*}
+ */
 const speedConverter = (value, unit) => {
   if (unit === "km/h") {
     return value;
   } else if (unit === "mph") {
     return Math.round(value * 1.609);
-  } else if (unit === "m/s") {
-    return Math.round(value * 3.6);
   }
+  return NaN;
 }
 
-// values shown in the weather info panel when the updateValues function is called
+/**
+ * convert timestamp in seconds into date object
+ * @param timestamp unix timestamp in seconds
+ * @returns {Date} date object
+ */
+const timestampToDate = (timestamp) => {
+  return new Date(timestamp * 1000);
+}
+
+/**
+ * convert date object into hour:minute string
+ * @param date date object
+ * @returns {string} hour:minute string
+ */
+const dateToHourMinute = (date) => {
+  return date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+}
+
 const currentValues = {
   temperature: 40, // celcius
   wind: 40, // km/h
   visibility: 5, // meters
   sunrise: 1654596000, // unix timestamp
-  sunset: 1654617600, moonrise: 1646309880, moonset: 1646352120, currWeather: "cloudy",
+  sunset: 1654617600,
+  moonrise: 1646309880,
+  moonset: 1646352120,
+  currWeather: "cloudy",
 }
 
-// convert timestamp in seconds into date object
-function timestampToDate(timestamp) {
-  return new Date(timestamp * 1000);
-}
-
-// convert date object into hour:minute string
-function dateToHourMinute(date) {
-  return date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
-}
-
-// update values in the weather info panel based on currentValues object's information
+/**
+ * update values in the weather info panel based on @code{currentValues} object's information and unit settings
+ */
 const updateValues = () => {
   // convert settings to human-readable text
   const unitSettingsText = {};
   for (const key in unitSettings) {
     unitSettingsText[key] = unitChoices[key][unitSettings[key]];
   }
-
   // convert current values to human readable text
   const currentValuesText = {
     "temperature": temperatureConverter(currentValues["temperature"], unitSettingsText["cell-temperature"]),
@@ -140,20 +214,19 @@ const updateValues = () => {
   }
 }
 
-// update values and what to show based on configuration read from our custom microservices
+/**
+ * update units and what to show based on configuration send from server
+ * @returns {Promise<void>}
+ */
 const readConfig = async () => {
   try {
-    // read local json configuration
-    const res = await fetch("http://localhost:3000/config");
-    const config = await res.json();
-
-    // elements to be shown in the weather info panel
+    const config = await fetchConfig();
     const toBeShown = [];
     for (const key in config) {
-      if (config[key].state === 0) continue;
-      toBeShown.push(key);
+      if (config[key].state) {
+        toBeShown.push(`cell-${key}`);
+      }
     }
-    const idToBeShown = toBeShown.map(key => `cell-${key}`);
 
     // update unities
     for (const key of ["temperature", "wind", "visibility"]) {
@@ -161,46 +234,48 @@ const readConfig = async () => {
     }
 
     updateValues()
-
-    hideAll();
-    show(idToBeShown);
+    showOnlySelectedWeatherPanelElements(toBeShown);
   } catch (err) {
     console.error("Error reading the configuration file.")
     console.log(err);
   }
 }
 
-// values defaulted to gif
-let userPosition = {
-  latitude: 48.7080181, longitude: 2.1613262
-}
-//
-// const updateUserPosition = async () => {
-//   try {
-//     const res = await fetch("https://ipinfo.io/json");
-//     const data = await res.json();
-//     userPosition = {
-//       latitude: data.loc.split(",")[0], longitude: data.loc.split(",")[1],
-//     }
-//   } catch (err) {
-//     console.error("Error getting user's position.")
-//     console.log(err);
-//   }
-// };
+const userPosition = {latitude: 48.7080181, longitude: 2.1613262} // gif-sur-yvette by default
 
+/**
+ * Update user's position using ip address
+ * @returns {Promise<void>}
+ */
+const updateUserPosition = async () => {
+  try {
+    const res = await fetch("https://ipinfo.io/json");
+    const data = await res.json();
+    userPosition.latitude = data.loc.split(",")[0];
+    userPosition.longitude = data.loc.split(",")[1];
+  } catch (err) {
+    console.error("Error getting user's position.")
+    console.log(err);
+  }
+};
 
+// updateUserPosition();
+
+/**
+ * Fetch weather from openweathermap.org
+ * @returns {Promise<any>} weather data
+ */
 const fetchWeatherFromAPI = async () => {
   try {
     // for now appId will be stored in a json file which is ignored by git
-    // but we'll use process.env in Node on the backend starting from tomorrow
+    // but we'll use process.env in Node on the backend later
     const envRes = await fetch("./env.json");
     const envData = await envRes.json();
     const appId = envData.appid;
 
     // fetch weather data
     // since I coded everything in English I didn't set the language to French in the query string
-    const url = `https://api.openweathermap.org/data/2.5/onecall?lang=en&lat=${userPosition.latitude}` 
-      + `&lon=${userPosition.longitude}&units=metric&exclude=minutely,hourly&appid=${appId}`;
+    const url = `https://api.openweathermap.org/data/2.5/onecall?lang=en&lat=${userPosition.latitude}` + `&lon=${userPosition.longitude}&units=metric&exclude=minutely,hourly&appid=${appId}`;
     const res = await fetch(url);
     return await res.json();
   } catch (err) {
@@ -209,13 +284,21 @@ const fetchWeatherFromAPI = async () => {
   }
 };
 
+/**
+ * Update the weather icon shown in the image panel
+ * @param iconCode the icon code from openweathermap.org
+ * @returns {Promise<void>}
+ */
 const updateWeatherIcon = async (iconCode) => {
   const icon = document.getElementById("weather-icon");
   icon.src = `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
 };
 
-// update values with call to Weather API
-const readData = async () => {
+/**
+ * Update @code{currentValues} object with values from openweathermap.org's API
+ * @returns {Promise<void>}
+ */
+const updateWeatherValuesWithAPI = async () => {
   try {
     const {current, daily} = await fetchWeatherFromAPI();
     currentValues["temperature"] = current.temp;
@@ -227,7 +310,7 @@ const readData = async () => {
     currentValues["moonset"] = daily[0].moonset;
     currentValues["currWeather"] = daily[0].weather[0].description;
     updateValues();
-    updateWeatherIcon(daily[0].weather[0].icon);
+    await updateWeatherIcon(daily[0].weather[0].icon);
   } catch (err) {
     console.error("Error updating weather data.");
     console.log(err);
@@ -236,11 +319,65 @@ const readData = async () => {
 
 const readConfigData = async () => {
   await readConfig();
-  await readData();
+  await updateWeatherValuesWithAPI();
 }
 
-readConfigData();
+/**
+ * Get values from the settings form
+ * @returns form values as an object
+ */
+const getFormValues = () => {
+  return {
+    "temperature": {
+      state: document.querySelector("#check-currWeather").checked, unit: document.querySelector("#select-unit").value,
+    }, "wind": {
+      state: document.querySelector("#check-wind").checked, unit: document.querySelector("#select-unit").value,
+    }, "visibility": {
+      state: document.querySelector("#check-visibility").checked, unit: document.querySelector("#select-unit").value,
+    }, "sunrise": {
+      state: document.querySelector("#check-sunrise").checked,
+    }, "sunset": {
+      state: document.querySelector("#check-sunset").checked,
+    }, "moonrise": {
+      state: document.querySelector("#check-moonrise").checked,
+    }, "moonset": {
+      state: document.querySelector("#check-moonset").checked,
+    }, "currWeather": {
+      state: document.querySelector("#check-currWeather").checked,
+    }
+  };
+}
 
-// Je n’ai pas fait la partie « mettre l’icon sur la carte » puisque j’ai déjà mis l’icone sur l’image de la
-// première image de la page pour le rendu du 7 juin
-   
+const sendConfig = async () => {
+  try {
+    const config = getFormValues();
+    await fetch("http://localhost:3000/config", {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(config)
+    });
+    alert("Your configuration has been successfully saved to the server.");
+  } catch (err) {
+    console.error("Error sending config data.");
+    console.log(err);
+  }
+}
+
+/**
+ * Save settings form's values to local storage and send info to server
+ * @param e click event
+ */
+const saveSettingsClickHandler = async (e) => {
+  e.preventDefault();
+  const formValues = getFormValues();
+  localStorage.setItem("config", JSON.stringify(formValues));
+  await sendConfig(); // send config to server
+  await readConfig(); // update weather panel information with latest settings
+}
+
+document.querySelector("#btn-return").addEventListener("click", saveSettingsClickHandler);
+
+readConfigData();
