@@ -2,11 +2,14 @@
 // Les commentaires ont été faits en Anglais parce que le français n’est pas ma langue maternelle
 
 // module imports
-const express = require('express');
-const app = express();
+const express = require("express");
+const cors = require("cors");
 
 // hard-coded settings
 const port = 3000;
+
+const app = express();
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

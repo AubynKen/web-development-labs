@@ -140,11 +140,11 @@ const updateValues = () => {
   }
 }
 
-// update values and what to show based on local json configuration
+// update values and what to show based on configuration read from our custom microservices
 const readConfig = async () => {
   try {
     // read local json configuration
-    const res = await fetch("./config.json");
+    const res = await fetch("http://localhost:3000/config");
     const config = await res.json();
 
     // elements to be shown in the weather info panel
