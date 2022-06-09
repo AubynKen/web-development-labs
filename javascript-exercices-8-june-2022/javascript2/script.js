@@ -29,3 +29,10 @@ for (const tag of anchorTags) {
   im.setAttribute("src", "https://wdi.centralesupelec.fr/appliouaibe/downloads/Main/image-lien.gif");
   tag.appendChild(im);
 }
+
+//
+const timestampToDate = (timestamp) => {
+  const date = new Date(timestamp * 1000);
+  return date.toLocaleString();
+}
+

@@ -84,7 +84,9 @@ body {
 }
 
 .weather-icon {
-    font-size: 9vw;
+    width: 16vw;
+    position: absolute;
+    right: 2vw;
 }
 
 

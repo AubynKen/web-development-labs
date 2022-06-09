@@ -1,0 +1,29 @@
+{
+  "temperature": {
+    "state": 1,
+    "unit": 0
+  },
+  "wind": {
+    "state": 1,
+    "unit": 0
+  },
+  "visibility": {
+    "state": 1,
+    "unit": 0
+  },
+  "sunrise": {
+    "state": 1
+  },
+  "sunset": {
+    "state": 1
+  },
+  "moonrise": {
+    "state": 1
+  },
+  "moonset": {
+    "state": 1
+  },
+  "currWeather": {
+    "state": 1
+  }
+}
